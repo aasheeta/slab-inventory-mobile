@@ -1,0 +1,148 @@
+
+.sidebar {
+  width: 205px;
+  background-color: #222;
+  color: #b8b8b8;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  font-size: 14px;
+  overflow-y: auto;
+}
+
+.sidebar-top {
+  padding: 15px;
+  border-bottom: 1px solid #333;
+}
+
+.need-help {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: #e6e6e6;
+}
+
+.help-icon {
+  color: #ffd700;
+  margin-right: 8px;
+}
+
+.go-website,
+.videos-link {
+  display: block;
+  color: #b8b8b8;
+  text-decoration: none;
+  margin-bottom: 6px;
+  /* padding-left: 15px; */
+}
+
+.videos-link {
+  color: #5bc0de;
+}
+
+.date {
+  font-size: 12px;
+  color: #7a7a7a;
+  margin: 10px 0 5px;
+}
+
+.flag {
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+
+.sidebar-menu {
+  flex: 1;
+}
+
+.menu-group {
+  border-bottom: 1px solid #333;
+}
+
+.menu-header {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.menu-header:hover {
+  background-color: #333;
+}
+
+.menu-header.expanded {
+  background-color: #1e1e1e;
+}
+
+.menu-icon {
+  margin-right: 10px;
+  width: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-label {
+  flex: 1;
+  font-weight: 500;
+}
+
+.expand-icon {
+  color: #888;
+}
+
+.submenu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background-color: #1a1a1a;
+}
+
+.submenu li {
+  display: flex;
+  align-items: center;
+  padding: 8px 15px 8px 40px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submenu li:hover {
+  background-color: #2a2a2a;
+}
+
+.submenu li.active {
+  background-color: #2a2a2a;
+  color: #ffffff;
+  border-left: 3px solid #5bc0de;
+}
+
+.submenu-icon {
+  margin-right: 8px;
+  opacity: 0.7;
+}
+
+.submenu-label {
+  font-size: 13px;
+}
+
+.logout-btn {
+  margin-top: auto;
+  background-color: #c0392b;
+  color: white;
+  border: none;
+  padding: 7px 9px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.logout-btn:hover {
+  background-color: #e74c3c;
+}
+
+.button-close{
+  float: right;
+  transform: scale(1.5);
+}
+

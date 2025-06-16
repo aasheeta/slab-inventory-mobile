@@ -1,0 +1,29 @@
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  padding: 15px 20px;
+  border-bottom: 1px solid #ccc;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+.topbar-icons {
+  display: flex;
+  gap: 20px;
+}
+
+.topbar .icon {
+  font-size: 20px;
+  color: #333;
+  cursor: pointer;
+}
+
+.topbar .icon:hover {
+  color: #007bff;
+}
