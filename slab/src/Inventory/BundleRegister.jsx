@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import './BundleRegister.css';
-import axios from 'axios';
 import Select from 'react-select';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -90,6 +89,7 @@ const BundleRegister = () => {
             const res  = await API.post('/api/bundles', bundleData, {
                 headers: { Authorization: `Bearer ${token}` }
             });
+            console.log(res)
             navigate('/');
 
                 alert('Bundle registered successfully!');
@@ -132,7 +132,6 @@ const BundleRegister = () => {
     };
 
     const [showMaterialModal, setShowMaterialModal] = useState(false);
-    const [materialError, setMaterialError] = useState('');
     const [newMaterial, setNewMaterial] = useState({
         name: '',
         type: '',

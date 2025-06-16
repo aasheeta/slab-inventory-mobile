@@ -28,8 +28,10 @@ const SupplierList = () => {
     }
   ]);
 
+  
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
+    console.log("abc", setSuppliers(""))
   };
 
   const handleApplyFilter = () => {

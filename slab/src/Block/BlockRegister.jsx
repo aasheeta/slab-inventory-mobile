@@ -71,7 +71,7 @@ const RegisterBlock = () => {
         volume: volume
       });
     }
-  }, [blockData.length, blockData.width, blockData.height]);
+  }, [blockData.length, blockData.width, blockData.height, blockData]);
 
   // Handle photo uploads
   const handleMainPhotoUpload = (e) => {

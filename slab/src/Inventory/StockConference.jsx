@@ -33,9 +33,9 @@ const StockConference = () => {
           <button className="btn-blue">Start Stock Check</button>
         </div>
         <div className="instructions">
-          <p><strong>Here are the instructions using your SlabWare application to do a Stock Check.</strong></p>
+          {/* <p><strong>Here are the instructions using your SlabWare application to do a Stock Check.</strong></p>
           <p>First you need to check if your application is working properly. <a href="#">Click here</a> to check it.</p>
-          <p>Then click on the "Stock Check" button to start the process.</p>
+          <p>Then click on the "Stock Check" button to start the process.</p> */}
           <p>After that, you need to go to the slider menu and click on the “Stock Check” option.</p>
           <p>You can also do this check on your computer - just click on "Start Stock Check".</p>
         </div>

@@ -5,10 +5,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { 
   FaBoxes, 
   FaShoppingCart, 
-  FaCalendarCheck, 
-  FaUsers, 
-  FaEnvelope, 
-  FaNewspaper,
   FaTruck,
   FaCubes,
   FaCube,
@@ -16,8 +12,6 @@ import {
   FaPlusSquare,
   FaCogs,
   FaChartBar,
-  FaUserFriends,
-  FaGlobe,
   FaChevronDown,
   FaChevronUp,
   FaQuestionCircle,
@@ -187,8 +181,8 @@ const Sidebar = ({closeSidebar }) => {
        <p className="need-help">
           <span className="help-icon"><FaQuestionCircle /></span> Need Help?
         </p>
-        <a href="#" className="go-website">Go to Website</a>
-        <a href="#" className="videos-link">Videos</a>
+        {/* <a href="#" className="go-website">Go to Website</a>
+        <a href="#" className="videos-link">Videos</a> */}
         <p className="date">May 16, 2025</p>
         <span className="flag">🇧🇷</span>
       

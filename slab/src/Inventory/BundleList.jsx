@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import './BundleList.css';
-import { Search, Tag, Monitor, Gift, Box, Camera, Calendar } from 'lucide-react';
+import { Tag, Monitor, Box, Camera, Calendar } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import API from '../api';
 
 const BundleList = () => {
-    const { token, logout, user } = useAuth();
+    const { token, logout } = useAuth();
   const navigate = useNavigate();
   const [materialValue, setMaterialValue] = useState('');
   const [blockValue, setBlockValue] = useState('');
@@ -35,7 +34,7 @@ const BundleList = () => {
       })
       .then(res => setBundles(res.data))
       .catch(() => logout());
-  }, [token]);
+  }, [token,logout]);
 
   const handleApplyFilter = () => {
     // You can later add filter logic here
