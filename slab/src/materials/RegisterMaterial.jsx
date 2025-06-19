@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FiUpload, FiPlus, } from 'react-icons/fi';
 import './RegisterMaterial.css';
+import API from "../api"
 
 // Register Material Component
 const RegisterMaterial = () => {
@@ -25,6 +26,19 @@ const RegisterMaterial = () => {
     }));
   };
 
+  const handleSave = async () => {
+  const { name, composition, classification, color } = formData;
+  if (!name) return alert("Name is required!");
+
+  try {
+    await API.post('/api/materials', { name, composition, classification, color });
+    alert("Material saved successfully!");
+  } catch (err) {
+    console.error("Failed to save material:", err);
+    alert("Error saving material");
+  }
+};
+
   return (
     <div className="register-material">
       <div className="header">
@@ -34,7 +48,7 @@ const RegisterMaterial = () => {
           <button className="btn btn-primary">
             <FiPlus /> New
           </button>
-          <button className="btn btn-success">Save</button>
+          <button className="btn btn-success" onClick={handleSave}>Save</button>
         </div>
       </div>
 

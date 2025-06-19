@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './BundleRegister.css';
 import Select from 'react-select';
 import { useAuth } from '../contexts/AuthContext';
@@ -8,8 +8,6 @@ import API from "../api"
 const BundleRegister = () => {
      const { token } = useAuth();
      const navigate = useNavigate();
-    const [supplier, setSupplier] = useState({ value: 'slabware', label: 'SLABWARE' });
-    const [material, setMaterial] = useState(null);
     const [quality, setQuality] = useState(null);
     const [thickness, setThickness] = useState(null);
     const [finish, setFinish] = useState(null);
@@ -23,20 +21,31 @@ const BundleRegister = () => {
     const [tags, setTags] = useState([]);
     const [availability, setAvailability] = useState('available');
 
-    // Static options
-    const supplierOptions = [
-        { value: 'slabware', label: 'SLABWARE' },
-        { value: 'granite_inc', label: 'Granite Inc.' },
-        { value: 'add_new', label: '+ Add New Supplier' }, // new option
-    ];
+    const [materials, setMaterials] = useState([]);
+    const [suppliers, setSuppliers] = useState([]);
+   const [showAddMaterialModal, setShowAddMaterialModal] = useState(false);
+    const [showAddSupplierModal, setShowAddSupplierModal] = useState(false);
+   const [newMaterialName, setNewMaterialName] = useState('');
+    const [newSupplierName, setNewSupplierName] = useState('');
+  const [bundleData, setBundleData] = useState({
+    material: materials,
+    supplier: suppliers,
+    // ... other fields
+  });
 
-    const materialOptions = [
-        { value: 'granite', label: 'Granite' },
-        { value: 'marble', label: 'Marble' },
-        { value: 'quartz', label: 'Quartz' },
-        { value: 'add_new', label: '+ Add New Material' },
+  useEffect(() => {
+    // Fetch materials from backend
+    API.get('/api/materials')
+      .then(res => setMaterials(res.data))
+      .catch(err => console.error("Failed to load materials", err));
+  }, []);
 
-    ];
+  useEffect(() => {
+    // Fetch materials from backend
+    API.get('/api/suppliers')
+      .then(res => setSuppliers(res.data))
+      .catch(err => console.error("Failed to load materials", err));
+  }, []);
 
     const qualityOptions = [
         { value: 'premium', label: 'Premium' },
@@ -64,8 +73,8 @@ const BundleRegister = () => {
 
     const handleSave = async () => {
         const bundleData = {
-            supplier: supplier.value,
-            material: material?.value,
+            supplier: suppliers.value,
+            material: materials?.value,
             quality: quality?.value,
             thickness: thickness?.value,
             finish: finish?.value,
@@ -98,69 +107,35 @@ const BundleRegister = () => {
         }
     };
 
-    const [showSupplierModal, setShowSupplierModal] = useState(false);
-    const [newSupplier, setNewSupplier] = useState({
-        name: '',
-        telephone: '',
-        address: '',
-        type: ''
-    });
+    const handleAddNewMaterial = async () => {
+        if (!newMaterialName.trim()) return;
 
-    const handleSupplierChange = (selectedOption) => {
-        if (selectedOption.value === 'add_new') {
-            setShowSupplierModal(true);
-        } else {
-            setSupplier(selectedOption);
+        try {
+            const res = await API.post('/api/materials', { name: newMaterialName });
+            setMaterials(prev => [...prev, res.data]); // Update dropdown list
+            setBundleData({ ...bundleData, material: res.data.name }); // Set selected
+            setNewMaterialName('');
+            setShowAddMaterialModal(false);
+        } catch (err) {
+            console.error("Failed to add material", err);
+            alert("Failed to add material");
         }
     };
 
-    const handleSaveSupplier = () => {
-        if (!newSupplier.name.trim()) {
-            alert("Supplier Name is required!");
-            return;
-        }
+    const handleAddNewSupplier = async () => {
+        if (!newSupplierName.trim()) return;
 
-        const createdSupplier = {
-            value: newSupplier.name.toLowerCase().replace(/\s+/g, '_'),
-            label: newSupplier.name
-        };
-
-        supplierOptions.splice(supplierOptions.length - 1, 0, createdSupplier);
-        setSupplier(createdSupplier);
-        setNewSupplier({ name: '', telephone: '', address: '', type: '' });
-        setShowSupplierModal(false);
-    };
-
-    const [showMaterialModal, setShowMaterialModal] = useState(false);
-    const [newMaterial, setNewMaterial] = useState({
-        name: '',
-        type: '',
-        color: '',
-    });
-    const handleMaterialChange = (selectedOption) => {
-        if (selectedOption.value === 'add_new') {
-            setShowMaterialModal(true);
-        } else {
-            setMaterial(selectedOption);
+        try {
+            const res = await API.post('/api/suppliers', { name: newSupplierName });
+            setSuppliers(prev => [...prev, res.data]); // Update dropdown list
+            setBundleData({ ...bundleData, material: res.data.name }); // Set selected
+            setNewSupplierName('');
+            setShowAddSupplierModal(false);
+        } catch (err) {
+            console.error("Failed to add material", err);
+            alert("Failed to add material");
         }
     };
-    const handleSaveMaterial = () => {
-        if (!newMaterial.name.trim()) {
-            alert("Material Name is required!");
-            return;
-        }
-
-        const createdMaterial = {
-            value: newMaterial.name.toLowerCase().replace(/\s+/g, '_'),
-            label: newMaterial.name
-        };
-
-        materialOptions.splice(materialOptions.length - 1, 0, createdMaterial);
-        setMaterial(createdMaterial);
-        setNewMaterial({ name: '', telephone: '', address: '', type: '' });
-        setShowMaterialModal(false);
-    };
-
 
     return (
         
@@ -184,24 +159,52 @@ const BundleRegister = () => {
                         <label htmlFor="supplier">
                             Supplier <span className="required">*</span>
                         </label>
-                        <Select
-                            id="supplier"
-                            options={supplierOptions}
-                            value={supplier}
-                            onChange={handleSupplierChange}
-                        />
+                         <select
+                            name="supplier"
+                            value={bundleData.supplier}
+                            onChange={(e) => {
+                                if (e.target.value === 'add_new') {
+                                    setShowAddSupplierModal(true);
+                                } else {
+                                    setBundleData({ ...bundleData, supplier: e.target.value });
+                                }
+                            }}
+                        >
+                            <option value="">(Select Supplier)</option>
+                            {suppliers.map(mat => (
+                                <option key={mat._id} value={mat.enterprise}>{mat.enterprise}</option>
+                            ))}
+                            <option value="add_new">➕ Add New Supplier</option>
+                        </select>
                     </div>
 
                     <div className="form-group">
                         <label htmlFor="material">
                             Material <span className="required">*</span>
                         </label>
-                        <Select
+                        {/* <Select
                             id="material"
                             options={materialOptions}
                             value={material}
                             onChange={handleMaterialChange}
-                        />
+                        /> */}
+                        <select
+                            name="material"
+                            value={bundleData.material}
+                            onChange={(e) => {
+                                if (e.target.value === 'add_new') {
+                                    setShowAddMaterialModal(true);
+                                } else {
+                                    setBundleData({ ...bundleData, material: e.target.value });
+                                }
+                            }}
+                        >
+                            <option value="">(Select Material)</option>
+                            {materials.map(mat => (
+                                <option key={mat._id} value={mat.name}>{mat.name}</option>
+                            ))}
+                            <option value="add_new">➕ Add New Material</option>
+                        </select>
 
                     </div>
 
@@ -452,91 +455,45 @@ const BundleRegister = () => {
                     </div>
                 </div>
             </div>
-            {showSupplierModal && (
+  
+            {showAddMaterialModal && (
                 <div className="modal-overlay">
-                    <div className="modal">
-                        <h3>Add New Supplier</h3>
-                        <div className="modal-field">
-                            <label>Supplier Name <span className="required">*</span></label>
-                            <input
-                                type="text"
-                                value={newSupplier.name}
-                                onChange={(e) => setNewSupplier({ ...newSupplier, name: e.target.value })}
-                            />
-                        </div>
-                        <div className="modal-field">
-                            <label>Telephone</label>
-                            <input
-                                type="text"
-                                value={newSupplier.telephone}
-                                onChange={(e) => setNewSupplier({ ...newSupplier, telephone: e.target.value })}
-                            />
-                        </div>
-                        <div className="modal-field">
-                            <label>Address</label>
-                            <input
-                                type="text"
-                                value={newSupplier.address}
-                                onChange={(e) => setNewSupplier({ ...newSupplier, address: e.target.value })}
-                            />
-                        </div>
-                        <div className="modal-field">
-                            <label>Type</label>
-                            <input
-                                type="text"
-                                value={newSupplier.type}
-                                onChange={(e) => setNewSupplier({ ...newSupplier, type: e.target.value })}
-                            />
-                        </div>
-
-                        <div className="modal-buttons">
-                            <button onClick={() => setShowSupplierModal(false)} className="btn-cancel">Cancel</button>
-                            <button onClick={handleSaveSupplier} className="btn-save">Save</button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {showMaterialModal && (
-                <div className="modal-overlay">
-                    <div className="modal">
+                    <div className="modal-box">
                         <h3>Add New Material</h3>
-                        <div className="modal-field">
-                            <label>Material Name <span className="required">*</span></label>
-                            <input
-                                type="text"
-                                value={newMaterial.name}
-                                onChange={(e) => setNewMaterial({ ...newMaterial, name: e.target.value })}
-                            />
-                        </div>
-                        <div className="modal-field">
-                            <label>Type</label>
-                            <input
-                                type="text"
-                                value={newMaterial.type}
-                                onChange={(e) => setNewMaterial({ ...newMaterial, type: e.target.value })}
-                            />
-                        </div>
-                        <div className="modal-field">
-                            <label>Color</label>
-                            <input
-                                type="text"
-                                value={newMaterial.color}
-                                onChange={(e) => setNewMaterial({ ...newMaterial, color: e.target.value })}
-                            />
-                        </div>
-                        <div className="modal-buttons">
-                            <button className="btn-cancel" onClick={() => setShowMaterialModal(false)}>Cancel</button>
-                            <button className="btn-save" onClick={handleSaveMaterial}>Save</button>
+                        <input
+                            type="text"
+                            value={newMaterialName}
+                            onChange={(e) => setNewMaterialName(e.target.value)}
+                            placeholder="Enter material name"
+                        />
+                        <div className="modal-actions">
+                            <button onClick={handleAddNewMaterial}>Save</button>
+                            <button onClick={() => setShowAddMaterialModal(false)}>Cancel</button>
                         </div>
                     </div>
                 </div>
             )}
 
-
+            {showAddSupplierModal && (
+                <div className="modal-overlay">
+                    <div className="modal-box">
+                        <h3>Add New Supplier</h3>
+                        <input
+                            type="text"
+                            value={newSupplierName}
+                            onChange={(e) => setNewSupplierName(e.target.value)}
+                            placeholder="Enter Supplier name"
+                        />
+                        <div className="modal-actions">
+                            <button onClick={handleAddNewSupplier}>Save</button>
+                            <button onClick={() => setShowAddSupplierModal(false)}>Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
         </div>
-      
+
     );
 };
 

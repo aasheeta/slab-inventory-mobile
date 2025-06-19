@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FiArrowLeft, FiPlus } from 'react-icons/fi';
 import './RegisterSupplier.css';
+import API from '../api';
 
 const RegisterSupplier = () => {
   const [formData, setFormData] = useState({
@@ -20,9 +21,17 @@ const RegisterSupplier = () => {
     }));
   };
 
-  const handleSave = () => {
-    console.log('Saving supplier data:', formData);
-  };
+ const handleSave = async () => {
+  try {
+    const res = await API.post('/api/suppliers', formData);
+    alert('Supplier registered successfully!');
+    console.log('Saved:', res.data);
+  } catch (error) {
+    console.error('Error saving supplier:', error);
+    alert('Failed to register supplier.');
+  }
+};
+
 
   const handleGoBack = () => {
     console.log('Going back');

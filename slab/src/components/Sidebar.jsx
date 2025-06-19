@@ -72,7 +72,10 @@ const Sidebar = ({closeSidebar }) => {
       label: 'Orders',
       icon: <FaShoppingCart size={18} />,
       expanded: expandedMenus.orders,
-      submenu: []
+      submenu: [
+        { id: 'order-list', path: '/order-list', label: 'Order List', icon: <FaClipboardList size={14} /> },
+        { id: 'order-register', path: '/order-register', label: 'New', icon: <FaPlusSquare size={14} /> },
+      ]
     },
     // {
     //   id: 'preBooking',

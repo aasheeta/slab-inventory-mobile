@@ -1,33 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FiPlus, FiSearch, FiEdit2, FiTrash2 } from 'react-icons/fi';
 import './SupplierList.css';
+import API from '../api';
 
 const SupplierList = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [suppliers, setSuppliers] = useState([
-    {
-      id: 1,
-      companyName: 'SLABWARE',
-      cnpj: '',
-      telephone: '',
-      note: ''
-    },
-    {
-      id: 2,
-      companyName: 'Pradeep',
-      cnpj: '',
-      telephone: '',
-      note: ''
-    },
-    {
-      id: 3,
-      companyName: 'Owned',
-      cnpj: '',
-      telephone: '',
-      note: ''
-    }
-  ]);
+  const [suppliers, setSuppliers] = useState([]);
 
+  useEffect(() => {
+    const fetchSuppliers = async () => {
+      try {
+        const res = await API.get('/api/suppliers'); // Adjust endpoint if needed
+        setSuppliers(res.data);
+      } catch (error) {
+        console.error('Failed to fetch suppliers:', error);
+      }
+    };
+
+    fetchSuppliers();
+  }, []);
   
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -55,9 +46,9 @@ const SupplierList = () => {
     console.log('Deleting supplier:', id);
   };
 
-  const filteredSuppliers = suppliers.filter(supplier =>
-    supplier.companyName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+ const filteredSuppliers = suppliers.filter(supplier =>
+  supplier.enterprise.toLowerCase().includes(searchTerm.toLowerCase())
+);
 
   return (
     <div className="supplier-list-container">
@@ -109,8 +100,8 @@ const SupplierList = () => {
               </thead>
               <tbody>
                 {filteredSuppliers.map((supplier) => (
-                  <tr key={supplier.id}>
-                    <td>{supplier.companyName}</td>
+                  <tr key={supplier._id}>
+                    <td>{supplier.enterprise}</td>
                     <td>{supplier.cnpj}</td>
                     <td>{supplier.telephone}</td>
                     <td>{supplier.note}</td>
@@ -118,14 +109,14 @@ const SupplierList = () => {
                       <div className="action-buttons">
                         <button
                           className="action-btn edit-btn"
-                          onClick={() => handleEditSupplier(supplier.id)}
+                          onClick={() => handleEditSupplier(supplier._id)}
                           title="Edit"
                         >
                           <FiEdit2 />
                         </button>
                         <button
                           className="action-btn delete-btn"
-                          onClick={() => handleDeleteSupplier(supplier.id)}
+                          onClick={() => handleDeleteSupplier(supplier._id)}
                           title="Delete"
                         >
                           <FiTrash2 />
@@ -135,6 +126,7 @@ const SupplierList = () => {
                   </tr>
                 ))}
               </tbody>
+
             </table>
           </div>
         </div>

@@ -15,6 +15,11 @@ const bundleSchema = new mongoose.Schema({
   oldPriceSqFt: String,
   tags: [String],
   availability: String,
+  status: {
+    type: String,
+    enum: ['available', 'on-hold', 'sold'],
+    default: 'available'
+  },
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   createdAt: { type: Date, default: Date.now }
 });

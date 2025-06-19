@@ -1,26 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {  FiEdit2, FiTrash2, FiPlus, FiSearch, FiFilter } from 'react-icons/fi';
 import './MaterialList.css';
+import API from '../api'
 
 const MaterialList = () => {
-  const [materials] = useState([
-    {
-      id: 1,
-      name: 'Honey brown',
-      classification: 'Basic',
-      composition: 'Granite',
-      color: 'Brown'
-    },
-    {
-      id: 2,
-      name: 'white',
-      classification: 'Exotic',
-      composition: 'Marble',
-      color: ''
-    }
-  ]);
-
+  const [materials, setMaterials] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    const fetchMaterials = async () => {
+      try {
+        const res = await API.get('/api/materials');
+        setMaterials(res.data);
+      } catch (err) {
+        console.error("Failed to load materials", err);
+      }
+    };
+
+    fetchMaterials();
+  }, []);
+
+  const filteredMaterials = materials.filter(mat =>
+  mat.name.toLowerCase().includes(searchTerm.toLowerCase())
+);
 
   return (
     <div className="bill-of-materials">
@@ -61,8 +63,8 @@ const MaterialList = () => {
             </tr>
           </thead>
           <tbody>
-            {materials.map((material) => (
-              <tr key={material.id}>
+            {filteredMaterials.map((material) => (
+              <tr key={material._id}>
                 <td>{material.name}</td>
                 <td>{material.classification}</td>
                 <td>{material.composition}</td>
@@ -76,9 +78,10 @@ const MaterialList = () => {
                       <FiTrash2 />
                     </button>
                   </div>
-                </td>
-              </tr>
-            ))}
+    </td>
+  </tr>
+))}
+
           </tbody>
         </table>
       </div>

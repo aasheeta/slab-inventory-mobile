@@ -355,3 +355,48 @@
   background-color: #fafafa;
 }
 
+.bundle-card-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  width: 100%;
+}
+
+@media (min-width: 480px) {
+  .bundle-card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.bundle-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.status-tag {
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-size: 12px;
+  text-transform: capitalize;
+  font-weight: 500;
+}
+
+.status-tag.available {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-tag.sold {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.status-tag.on-hold {
+  background-color: #fff3cd;
+  color: #856404;
+}
+

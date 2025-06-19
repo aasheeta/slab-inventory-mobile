@@ -8,10 +8,24 @@ import API from '../api';
 const BundleList = () => {
     const { token, logout } = useAuth();
   const navigate = useNavigate();
-  const [materialValue, setMaterialValue] = useState('');
+  // const [materialValue, setMaterialValue] = useState('');
   const [blockValue, setBlockValue] = useState('');
   const [bundleValue, setBundleValue] = useState('');
   const [bundles, setBundles] = useState([]); // ← State to store fetched bundles
+  const [materials, setMaterials] = useState([]);
+  const [bundleData, setBundleData] = useState({
+    material: '',
+    // ... other fields
+  });
+
+  
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
 //   useEffect(() => {
 //     fetchBundles();
@@ -28,6 +42,13 @@ const BundleList = () => {
 
 
   useEffect(() => {
+    // Fetch materials from backend
+    API.get('/api/materials')
+      .then(res => setMaterials(res.data))
+      .catch(err => console.error("Failed to load materials", err));
+  }, []);
+
+  useEffect(() => {
     API
       .get('/api/bundles', {
         headers: { Authorization: `Bearer ${token}` }
@@ -42,7 +63,7 @@ const BundleList = () => {
   };
 
   const handleClear = () => {
-    setMaterialValue('');
+    // setMaterialValue('');
     setBlockValue('');
     setBundleValue('');
   };
@@ -65,14 +86,19 @@ const BundleList = () => {
         <div className="filter-row">
           <div className="filter-item">
             <label>Material</label>
-            <select 
-              value={materialValue} 
-              onChange={(e) => setMaterialValue(e.target.value)}
+            <select
+              name="material"
+              value={bundleData.material}
+              onChange={(e) =>
+                setBundleData({ ...bundleData, material: e.target.value })
+              }
             >
-              <option value="">Select</option>
-              <option value="marble">Marble</option>
-              <option value="granite">Granite</option>
-              <option value="quartz">Quartz</option>
+              <option value="">(Select Material)</option>
+              {materials.map((mat) => (
+                <option key={mat._id} value={mat.name}>
+                  {mat.name}
+                </option>
+              ))}
             </select>
           </div>
           
@@ -151,45 +177,61 @@ const BundleList = () => {
         </div>
       </div>
       
-      <div className="records-container">
-  {bundles.length === 0 ? (
-    <div className="no-records-message">
-      <div className="dots">
-        <span className="dot"></span>
-        <span className="dot"></span>
-      </div>
-      <p>There is no record or no record was found.</p>
-    </div>
-  ) : (
-    <div className="table-responsive">
-    <table className="bundle-table">
-      <thead>
-        <tr>
-          <th>Material</th>
-          <th>Block</th>
-          <th>Bundle</th>
-          <th>Quality</th>
-          <th>Thickness</th>
-          <th>Finish</th>
-        </tr>
-      </thead>
-      <tbody>
-        {bundles.map((bundle) => (
-          <tr key={bundle._id}>
-            <td>{bundle.material}</td>
-            <td>{bundle.block}</td>
-            <td>{bundle.bundle}</td>
-            <td>{bundle.quality}</td>
-            <td>{bundle.thickness}</td>
-            <td>{bundle.finish}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-     </div>
-  )}
+       <div className="records-container">
+      {bundles.length === 0 ? (
+        <div className="no-records-message">
+          <p>No records found</p>
+        </div>
+      ) : isMobile ? (
+        <div className="bundle-card-grid">
+          {bundles.map((bundle) => (
+            <div className="bundle-card" key={bundle._id}>
+              <strong>Material:</strong> {bundle.material}<br />
+              <strong>Block:</strong> {bundle.block}<br />
+              <strong>Bundle:</strong> {bundle.bundle}<br />
+              <strong>Quality:</strong> {bundle.quality}<br />
+              <strong>Thickness:</strong> {bundle.thickness}<br />
+              <strong>Finish:</strong> {bundle.finish}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="table-responsive">
+          <table className="bundle-table">
+            <thead>
+              <tr>
+                <th>Material</th>
+                <th>Block</th>
+                <th>Bundle</th>
+                <th>Quality</th>
+                <th>Thickness</th>
+                <th>Finish</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {bundles.map((bundle) => (
+                <tr key={bundle._id}>
+                  <td>{bundle.material}</td>
+                  <td>{bundle.block}</td>
+                  <td>{bundle.bundle}</td>
+                  <td>{bundle.quality}</td>
+                  <td>{bundle.thickness}</td>
+                  <td>{bundle.finish}</td>
+                  <td>
+                    <span
+                      className={`status-tag ${bundle.status}`}
+                    >
+                      {bundle.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 </div>
-
     </div>
   );
 };

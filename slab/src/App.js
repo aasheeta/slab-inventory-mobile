@@ -17,6 +17,8 @@ import RegisterMaterial from './materials/RegisterMaterial';
 import MaterialList from './materials/MaterialList';
 import MaterialSetting from './materials/MaterialSetting';
 import Layout from './layout/Layout';
+import OrderRegister from './Order/OrderRegister';
+import OrderList from './Order/OrderList';
 
 const ProtectedRoute = ({ children }) => {
   const { token } = useAuth();
@@ -50,6 +52,8 @@ const App = () => {
                      <Route path="material-register" element={<RegisterMaterial />} />
                       <Route path="material-list" element={<MaterialList />} />
                        <Route path="material-setting" element={<MaterialSetting />} />
+                        <Route path="order-register" element={<OrderRegister />} />
+                      <Route path="order-list" element={<OrderList />} />
                 </Routes>
               </div>
             </div>
