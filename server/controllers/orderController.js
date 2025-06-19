@@ -1,4 +1,4 @@
-const Order = require('../models/Order');
+const Order = require('../models/order');
 const Bundle = require('../models/Bundle');
 
 // Create new order and update bundle status
