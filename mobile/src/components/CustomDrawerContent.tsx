@@ -5,19 +5,12 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  Text,
 } from 'react-native';
 import {
   DrawerContentScrollView,
   DrawerContentComponentProps,
 } from '@react-navigation/drawer';
-import {
-  Avatar,
-  Text,
-  Divider,
-  Surface,
-  IconButton,
-} from 'react-native-paper';
-import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../contexts/AuthContext';
 import { colors, spacing, fontSize } from '../utils/theme';
 
@@ -50,17 +43,17 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
   };
 
   const menuItems: MenuItem[] = [
-    { label: 'Dashboard', icon: 'home-outline', route: 'Dashboard' },
-    { label: 'Bundle List', icon: 'cube-outline', route: 'Bundle List', category: 'Inventory' },
-    { label: 'Add Bundle', icon: 'add-circle-outline', route: 'Add Bundle', category: 'Inventory' },
-    { label: 'Material List', icon: 'layers-outline', route: 'Material List', category: 'Materials' },
-    { label: 'Add Material', icon: 'add-outline', route: 'Add Material', category: 'Materials' },
-    { label: 'Supplier List', icon: 'people-outline', route: 'Supplier List', category: 'Suppliers' },
-    { label: 'Add Supplier', icon: 'person-add-outline', route: 'Add Supplier', category: 'Suppliers' },
-    { label: 'Block List', icon: 'grid-outline', route: 'Block List', category: 'Blocks' },
-    { label: 'Add Block', icon: 'add-circle-outline', route: 'Add Block', category: 'Blocks' },
-    { label: 'Order List', icon: 'list-outline', route: 'Order List', category: 'Orders' },
-    { label: 'Add Order', icon: 'add-outline', route: 'Add Order', category: 'Orders' },
+    { label: 'Dashboard', icon: '🏠', route: 'Dashboard' },
+    { label: 'Bundle List', icon: '📦', route: 'Bundle List', category: 'Inventory' },
+    { label: 'Add Bundle', icon: '➕', route: 'Add Bundle', category: 'Inventory' },
+    { label: 'Material List', icon: '📋', route: 'Material List', category: 'Materials' },
+    { label: 'Add Material', icon: '➕', route: 'Add Material', category: 'Materials' },
+    { label: 'Supplier List', icon: '👥', route: 'Supplier List', category: 'Suppliers' },
+    { label: 'Add Supplier', icon: '👤', route: 'Add Supplier', category: 'Suppliers' },
+    { label: 'Block List', icon: '🧱', route: 'Block List', category: 'Blocks' },
+    { label: 'Add Block', icon: '➕', route: 'Add Block', category: 'Blocks' },
+    { label: 'Order List', icon: '📝', route: 'Order List', category: 'Orders' },
+    { label: 'Add Order', icon: '➕', route: 'Add Order', category: 'Orders' },
   ];
 
   const groupedMenuItems = menuItems.reduce((acc, item) => {
@@ -84,11 +77,7 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
         ]}
         onPress={() => props.navigation.navigate(item.route)}
       >
-        <Ionicons
-          name={item.icon as any}
-          size={24}
-          color={isActive ? colors.primary : colors.textSecondary}
-        />
+        <Text style={styles.menuIcon}>{item.icon}</Text>
         <Text
           style={[
             styles.menuText,
@@ -105,21 +94,21 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
     <View style={styles.container}>
       <DrawerContentScrollView {...props} showsVerticalScrollIndicator={false}>
         {/* User Profile Section */}
-        <Surface style={styles.profileSection}>
+        <View style={styles.profileSection}>
           <View style={styles.profileHeader}>
-            <Avatar.Text
-              size={60}
-              label={user?.name?.charAt(0) || 'U'}
-              style={styles.avatar}
-            />
+            <View style={styles.avatar}>
+              <Text style={styles.avatarText}>
+                {user?.name?.charAt(0) || 'U'}
+              </Text>
+            </View>
             <View style={styles.profileInfo}>
               <Text style={styles.userName}>{user?.name || 'User'}</Text>
               <Text style={styles.userEmail}>{user?.email || 'user@example.com'}</Text>
             </View>
           </View>
-        </Surface>
+        </View>
 
-        <Divider style={styles.divider} />
+        <View style={styles.divider} />
 
         {/* Navigation Menu */}
         <View style={styles.menuContainer}>
@@ -133,22 +122,22 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
           ))}
         </View>
 
-        <Divider style={styles.divider} />
+        <View style={styles.divider} />
 
         {/* Help Section */}
         <View style={styles.helpSection}>
-          <Text style={styles.helpText}>Need Help?</Text>
+          <Text style={styles.helpText}>❓ Need Help?</Text>
           <Text style={styles.helpSubtext}>Contact your administrator</Text>
         </View>
       </DrawerContentScrollView>
 
       {/* Footer */}
-      <Surface style={styles.footer}>
+      <View style={styles.footer}>
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Ionicons name="log-out-outline" size={24} color={colors.error} />
+          <Text style={styles.logoutIcon}>🚪</Text>
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
-      </Surface>
+      </View>
     </View>
   );
 };
@@ -160,8 +149,13 @@ const styles = StyleSheet.create({
   },
   profileSection: {
     margin: spacing.md,
+    backgroundColor: colors.surface,
     borderRadius: 12,
     elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   profileHeader: {
     flexDirection: 'row',
@@ -169,7 +163,17 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
   },
   avatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     backgroundColor: colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  avatarText: {
+    color: colors.onPrimary,
+    fontSize: fontSize.xl,
+    fontWeight: 'bold',
   },
   profileInfo: {
     marginLeft: spacing.md,
@@ -186,6 +190,8 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
   divider: {
+    height: 1,
+    backgroundColor: colors.border,
     marginVertical: spacing.md,
   },
   menuContainer: {
@@ -213,10 +219,13 @@ const styles = StyleSheet.create({
   activeMenuItem: {
     backgroundColor: `${colors.primary}15`,
   },
+  menuIcon: {
+    fontSize: fontSize.lg,
+    marginRight: spacing.md,
+  },
   menuText: {
     fontSize: fontSize.md,
     color: colors.textSecondary,
-    marginLeft: spacing.md,
   },
   activeMenuText: {
     color: colors.primary,
@@ -240,17 +249,25 @@ const styles = StyleSheet.create({
   footer: {
     borderTopWidth: 1,
     borderTopColor: colors.border,
+    backgroundColor: colors.surface,
     elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   logoutButton: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: spacing.lg,
   },
+  logoutIcon: {
+    fontSize: fontSize.lg,
+    marginRight: spacing.md,
+  },
   logoutText: {
     fontSize: fontSize.md,
     color: colors.error,
-    marginLeft: spacing.md,
     fontWeight: '600',
   },
 });

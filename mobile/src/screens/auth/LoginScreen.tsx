@@ -6,14 +6,11 @@ import {
   Platform,
   ScrollView,
   Alert,
-} from 'react-native';
-import {
-  TextInput,
-  Button,
   Text,
-  Card,
+  TextInput,
+  TouchableOpacity,
   ActivityIndicator,
-} from 'react-native-paper';
+} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../../contexts/AuthContext';
 import { colors, spacing, fontSize } from '../../utils/theme';
@@ -54,64 +51,73 @@ const LoginScreen: React.FC = () => {
             <Text style={styles.subtitle}>Mobile Management System</Text>
           </View>
 
-          <Card style={styles.loginCard}>
-            <Card.Content style={styles.cardContent}>
+          <View style={styles.loginCard}>
+            <View style={styles.cardContent}>
               <Text style={styles.loginTitle}>Welcome Back</Text>
               <Text style={styles.loginSubtitle}>
                 Sign in to your account
               </Text>
 
-              <TextInput
-                label="Email"
-                value={email}
-                onChangeText={setEmail}
-                mode="outlined"
-                style={styles.input}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoComplete="email"
-                left={<TextInput.Icon icon="email" />}
-              />
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>Email</Text>
+                <TextInput
+                  value={email}
+                  onChangeText={setEmail}
+                  style={styles.input}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoComplete="email"
+                  placeholder="Enter your email"
+                  placeholderTextColor={colors.textSecondary}
+                />
+              </View>
 
-              <TextInput
-                label="Password"
-                value={password}
-                onChangeText={setPassword}
-                mode="outlined"
-                style={styles.input}
-                secureTextEntry={!showPassword}
-                autoCapitalize="none"
-                autoComplete="password"
-                left={<TextInput.Icon icon="lock" />}
-                right={
-                  <TextInput.Icon
-                    icon={showPassword ? 'eye-off' : 'eye'}
-                    onPress={() => setShowPassword(!showPassword)}
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>Password</Text>
+                <View style={styles.passwordContainer}>
+                  <TextInput
+                    value={password}
+                    onChangeText={setPassword}
+                    style={styles.passwordInput}
+                    secureTextEntry={!showPassword}
+                    autoCapitalize="none"
+                    autoComplete="password"
+                    placeholder="Enter your password"
+                    placeholderTextColor={colors.textSecondary}
                   />
-                }
-              />
+                  <TouchableOpacity
+                    style={styles.eyeButton}
+                    onPress={() => setShowPassword(!showPassword)}
+                  >
+                    <Text style={styles.eyeText}>
+                      {showPassword ? '👁️' : '🙈'}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
 
-              <Button
-                mode="contained"
+              <TouchableOpacity
+                style={[
+                  styles.loginButton,
+                  loading && styles.loginButtonDisabled
+                ]}
                 onPress={handleLogin}
-                style={styles.loginButton}
-                contentStyle={styles.loginButtonContent}
                 disabled={loading}
               >
                 {loading ? (
                   <ActivityIndicator color={colors.onPrimary} />
                 ) : (
-                  'Sign In'
+                  <Text style={styles.loginButtonText}>Sign In</Text>
                 )}
-              </Button>
+              </TouchableOpacity>
 
               <View style={styles.helpContainer}>
                 <Text style={styles.helpText}>
                   Need help? Contact your administrator
                 </Text>
               </View>
-            </Card.Content>
-          </Card>
+            </View>
+          </View>
         </ScrollView>
       </KeyboardAvoidingView>
     </LinearGradient>
@@ -148,8 +154,16 @@ const styles = StyleSheet.create({
     opacity: 0.9,
   },
   loginCard: {
-    elevation: 8,
+    backgroundColor: colors.surface,
     borderRadius: 16,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
   },
   cardContent: {
     padding: spacing.xl,
@@ -167,16 +181,64 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: spacing.xl,
   },
-  input: {
+  inputContainer: {
     marginBottom: spacing.md,
   },
+  inputLabel: {
+    fontSize: fontSize.sm,
+    color: colors.text,
+    marginBottom: spacing.xs,
+    fontWeight: '600',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 8,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
+    fontSize: fontSize.md,
+    color: colors.text,
+    backgroundColor: colors.surface,
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 8,
+    backgroundColor: colors.surface,
+  },
+  passwordInput: {
+    flex: 1,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
+    fontSize: fontSize.md,
+    color: colors.text,
+  },
+  eyeButton: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
+  },
+  eyeText: {
+    fontSize: fontSize.lg,
+  },
   loginButton: {
+    backgroundColor: colors.primary,
+    borderRadius: 8,
+    paddingVertical: spacing.md,
     marginTop: spacing.md,
     marginBottom: spacing.lg,
-    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 48,
   },
-  loginButtonContent: {
-    paddingVertical: spacing.sm,
+  loginButtonDisabled: {
+    opacity: 0.6,
+  },
+  loginButtonText: {
+    color: colors.onPrimary,
+    fontSize: fontSize.lg,
+    fontWeight: 'bold',
   },
   helpContainer: {
     alignItems: 'center',
