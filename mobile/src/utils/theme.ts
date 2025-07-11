@@ -1,4 +1,5 @@
-// Web-compatible theme configuration
+import { MD3LightTheme as DefaultTheme } from 'react-native-paper';
+
 export const colors = {
   primary: '#2E7D32',
   primaryVariant: '#1B5E20',
@@ -20,9 +21,10 @@ export const colors = {
   notification: '#FF6F00',
 };
 
-// Simple theme object that works well with web
 export const theme = {
+  ...DefaultTheme,
   colors: {
+    ...DefaultTheme.colors,
     primary: colors.primary,
     primaryContainer: colors.primaryVariant,
     secondary: colors.secondary,
@@ -36,7 +38,6 @@ export const theme = {
     onBackground: colors.onBackground,
     outline: colors.border,
   },
-  roundness: 8,
 };
 
 export const spacing = {
