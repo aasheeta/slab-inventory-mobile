@@ -5,16 +5,11 @@ import {
   ScrollView,
   RefreshControl,
   Dimensions,
-} from 'react-native';
-import {
-  Card,
   Text,
-  IconButton,
-  Surface,
+  TouchableOpacity,
   ActivityIndicator,
-} from 'react-native-paper';
+} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, fontSize } from '../../utils/theme';
 
 const { width } = Dimensions.get('window');
@@ -36,28 +31,28 @@ const DashboardScreen: React.FC = () => {
     {
       title: 'Total Visits',
       value: '12,000',
-      icon: 'trending-up',
+      icon: '📈',
       color: colors.primary,
       change: '+12%',
     },
     {
       title: 'Orders',
       value: '350',
-      icon: 'receipt',
+      icon: '📋',
       color: colors.secondary,
       change: '+8%',
     },
     {
       title: 'New Customers',
       value: '120',
-      icon: 'people',
+      icon: '👥',
       color: '#1976D2',
       change: '+15%',
     },
     {
       title: 'New Orders',
       value: '90',
-      icon: 'add-circle',
+      icon: '➕',
       color: '#388E3C',
       change: '+5%',
     },
@@ -80,14 +75,14 @@ const DashboardScreen: React.FC = () => {
   };
 
   const StatCard: React.FC<{ item: StatCard }> = ({ item }) => (
-    <Card style={[styles.statCard, { width: cardWidth }]}>
+    <View style={[styles.statCard, { width: cardWidth }]}>
       <LinearGradient
         colors={[item.color, `${item.color}CC`]}
         style={styles.statCardGradient}
       >
         <View style={styles.statCardContent}>
           <View style={styles.statCardHeader}>
-            <Ionicons name={item.icon as any} size={24} color={colors.onPrimary} />
+            <Text style={styles.iconText}>{item.icon}</Text>
             {item.change && (
               <Text style={styles.changeText}>{item.change}</Text>
             )}
@@ -96,8 +91,17 @@ const DashboardScreen: React.FC = () => {
           <Text style={styles.statTitle}>{item.title}</Text>
         </View>
       </LinearGradient>
-    </Card>
+    </View>
   );
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={colors.primary} />
+        <Text style={styles.loadingText}>Loading dashboard...</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView
@@ -125,60 +129,60 @@ const DashboardScreen: React.FC = () => {
         ))}
       </View>
 
-      <Card style={styles.bundleCard}>
-        <Card.Content>
+      <View style={styles.bundleCard}>
+        <View style={styles.cardContent}>
           <View style={styles.cardHeader}>
             <Text style={styles.cardTitle}>Bundle Overview</Text>
-            <IconButton
-              icon="refresh"
-              size={20}
+            <TouchableOpacity
+              style={styles.refreshButton}
               onPress={onRefresh}
-              iconColor={colors.primary}
-            />
+            >
+              <Text style={styles.refreshIcon}>🔄</Text>
+            </TouchableOpacity>
           </View>
           
           <View style={styles.bundleStatsContainer}>
             {bundleStats.map((stat, index) => (
-              <Surface key={index} style={styles.bundleStatItem}>
+              <View key={index} style={styles.bundleStatItem}>
                 <View
                   style={[styles.bundleColorIndicator, { backgroundColor: stat.color }]}
                 />
                 <Text style={styles.bundleCount}>{stat.count}</Text>
                 <Text style={styles.bundleLabel}>{stat.label}</Text>
-              </Surface>
+              </View>
             ))}
           </View>
-        </Card.Content>
-      </Card>
+        </View>
+      </View>
 
-      <Card style={styles.actionCard}>
-        <Card.Content>
+      <View style={styles.actionCard}>
+        <View style={styles.cardContent}>
           <Text style={styles.cardTitle}>Quick Actions</Text>
           <View style={styles.quickActionsContainer}>
-            <Surface style={styles.quickActionButton}>
-              <Ionicons name="add-circle" size={32} color={colors.primary} />
+            <TouchableOpacity style={styles.quickActionButton}>
+              <Text style={styles.quickActionIcon}>➕</Text>
               <Text style={styles.quickActionText}>Add Bundle</Text>
-            </Surface>
-            <Surface style={styles.quickActionButton}>
-              <Ionicons name="person-add" size={32} color={colors.secondary} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.quickActionButton}>
+              <Text style={styles.quickActionIcon}>👤</Text>
               <Text style={styles.quickActionText}>Add Supplier</Text>
-            </Surface>
-            <Surface style={styles.quickActionButton}>
-              <Ionicons name="receipt" size={32} color={colors.accent} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.quickActionButton}>
+              <Text style={styles.quickActionIcon}>📋</Text>
               <Text style={styles.quickActionText}>New Order</Text>
-            </Surface>
+            </TouchableOpacity>
           </View>
-        </Card.Content>
-      </Card>
+        </View>
+      </View>
 
-      <Card style={styles.bestSellersCard}>
-        <Card.Content>
+      <View style={styles.bestSellersCard}>
+        <View style={styles.cardContent}>
           <Text style={styles.cardTitle}>Top Best Sellers</Text>
           <View style={styles.bestSellersList}>
             {['Material A', 'Material B', 'Material C'].map((material, index) => (
-              <Surface key={index} style={styles.bestSellerItem}>
+              <View key={index} style={styles.bestSellerItem}>
                 <Text style={styles.bestSellerText}>{material}</Text>
-              </Surface>
+              </View>
             ))}
           </View>
           
@@ -188,13 +192,13 @@ const DashboardScreen: React.FC = () => {
           <View style={styles.stockMaterialsList}>
             {['Granite X', 'Quartz Y', 'Marble Z'].map((material, index) => (
               <View key={index} style={styles.stockMaterialItem}>
-                <Ionicons name="checkmark-circle" size={16} color={colors.accent} />
+                <Text style={styles.checkIcon}>✅</Text>
                 <Text style={styles.stockMaterialText}>{material}</Text>
               </View>
             ))}
           </View>
-        </Card.Content>
-      </Card>
+        </View>
+      </View>
     </ScrollView>
   );
 };
@@ -203,6 +207,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: spacing.md,
+    fontSize: fontSize.md,
+    color: colors.textSecondary,
   },
   header: {
     padding: spacing.lg,
@@ -228,9 +242,13 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   statCard: {
-    elevation: 4,
     borderRadius: 12,
     overflow: 'hidden',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   statCardGradient: {
     padding: spacing.md,
@@ -244,6 +262,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: spacing.sm,
+  },
+  iconText: {
+    fontSize: fontSize.xl,
   },
   changeText: {
     color: colors.onPrimary,
@@ -264,8 +285,16 @@ const styles = StyleSheet.create({
   bundleCard: {
     margin: spacing.lg,
     marginTop: 0,
-    elevation: 2,
+    backgroundColor: colors.surface,
     borderRadius: 12,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  cardContent: {
+    padding: spacing.lg,
   },
   cardHeader: {
     flexDirection: 'row',
@@ -278,6 +307,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: colors.text,
   },
+  refreshButton: {
+    padding: spacing.sm,
+  },
+  refreshIcon: {
+    fontSize: fontSize.lg,
+  },
   bundleStatsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -289,7 +324,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     width: (width - spacing.lg * 2 - spacing.sm * 4) / 5,
+    backgroundColor: colors.background,
     elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 1,
   },
   bundleColorIndicator: {
     width: 4,
@@ -311,8 +351,13 @@ const styles = StyleSheet.create({
   actionCard: {
     margin: spacing.lg,
     marginTop: 0,
-    elevation: 2,
+    backgroundColor: colors.surface,
     borderRadius: 12,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   quickActionsContainer: {
     flexDirection: 'row',
@@ -323,20 +368,33 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
     borderRadius: 12,
     alignItems: 'center',
+    backgroundColor: colors.background,
     elevation: 1,
     width: (width - spacing.lg * 2 - spacing.md * 2) / 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 1,
+  },
+  quickActionIcon: {
+    fontSize: fontSize.xxxl,
+    marginBottom: spacing.sm,
   },
   quickActionText: {
     fontSize: fontSize.sm,
     color: colors.text,
-    marginTop: spacing.sm,
     textAlign: 'center',
   },
   bestSellersCard: {
     margin: spacing.lg,
     marginTop: 0,
-    elevation: 2,
+    backgroundColor: colors.surface,
     borderRadius: 12,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   bestSellersList: {
     flexDirection: 'row',
@@ -349,7 +407,12 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     borderRadius: 8,
     alignItems: 'center',
+    backgroundColor: colors.background,
     elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 1,
   },
   bestSellerText: {
     fontSize: fontSize.sm,
@@ -364,10 +427,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: spacing.sm,
   },
+  checkIcon: {
+    fontSize: fontSize.md,
+    marginRight: spacing.sm,
+  },
   stockMaterialText: {
     fontSize: fontSize.md,
     color: colors.text,
-    marginLeft: spacing.sm,
   },
 });
 
